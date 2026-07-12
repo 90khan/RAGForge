@@ -7,10 +7,6 @@ class BaseProvider(ABC):
     def generate(
         self,
         prompt: str,
-        max_new_tokens: int = 256,
+        max_tokens: int = 512,
     ) -> str:
-        pass
-
-    @abstractmethod
-    def health_check(self) -> bool:
-        pass
+        ...

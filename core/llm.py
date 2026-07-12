@@ -1,20 +1,19 @@
-from config.settings import LLM_PROVIDER
-
-from providers.huggingface_provider import HuggingFaceProvider
 from providers.ollama_provider import OllamaProvider
 
 
-class LLMFactory:
+class LLM:
 
-    @staticmethod
-    def create():
+    def __init__(self):
 
-        provider = LLM_PROVIDER.lower()
+        self.provider = OllamaProvider()
 
-        if provider == "ollama":
-            return OllamaProvider()
+    def generate(
+        self,
+        prompt: str,
+        max_tokens: int = 512,
+    ):
 
-        if provider == "huggingface":
-            return HuggingFaceProvider()
-
-        raise ValueError(f"Unknown provider: {provider}")
+        return self.provider.generate(
+            prompt,
+            max_tokens,
+        )

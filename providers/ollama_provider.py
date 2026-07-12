@@ -1,44 +1,43 @@
 import ollama
 
-from config.settings import OLLAMA_MODEL
-from .base_provider import BaseProvider
+from config.settings import settings
+
+from providers.base_provider import BaseProvider
 
 
 class OllamaProvider(BaseProvider):
 
     def __init__(self):
 
-        self.model = OLLAMA_MODEL
-
-    def health_check(self):
-
-        try:
-
-            ollama.list()
-
-            return True
-
-        except Exception:
-
-            return False
+        self.model = settings.ollama_model
 
     def generate(
         self,
-        prompt,
-        max_new_tokens=256,
-    ):
+        prompt: str,
+        max_tokens: int = 512,
+    ) -> str:
 
         response = ollama.chat(
+
             model=self.model,
+
             messages=[
+
                 {
                     "role": "user",
                     "content": prompt,
                 }
+
             ],
+
             options={
-                "num_predict": max_new_tokens,
-            },
+
+                "num_predict": max_tokens,
+
+                "temperature": 0,
+
+            }
+
         )
 
-        return response["message"]["content"]
+        return response.message.content
