@@ -1,4 +1,4 @@
-from typing import List
+from models.document import Chunk, Document
 
 
 class TextChunker:
@@ -8,26 +8,34 @@ class TextChunker:
         chunk_size: int = 500,
         overlap: int = 100,
     ):
+
         self.chunk_size = chunk_size
         self.overlap = overlap
 
-    def split(self, text: str) -> List[str]:
+    def split(
+        self,
+        document: Document,
+    ) -> Document:
 
-        text = text.strip()
-
-        if not text:
-            return []
-
-        chunks = []
+        text = document.text
 
         start = 0
+
+        chunk_id = 0
 
         while start < len(text):
 
             end = start + self.chunk_size
 
-            chunks.append(text[start:end])
+            chunk = Chunk(
+                id=chunk_id,
+                text=text[start:end],
+            )
+
+            document.chunks.append(chunk)
+
+            chunk_id += 1
 
             start += self.chunk_size - self.overlap
 
-        return chunks
+        return document

@@ -1,19 +1,19 @@
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List
+from typing import Any
 
 
-@dataclass
+@dataclass(slots=True)
 class Chunk:
-    id: int
+    id: str
     text: str
-    page: int
-    metadata: Dict = field(default_factory=dict)
+    page: int | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
-@dataclass
+@dataclass(slots=True)
 class Document:
     id: str
     source: Path
     text: str
-    chunks: List[Chunk] = field(default_factory=list)
+    chunks: list[Chunk] = field(default_factory=list)

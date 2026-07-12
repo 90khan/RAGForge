@@ -1,8 +1,13 @@
 import faiss
 import numpy as np
 
+from models.document import Chunk
+from models.search import SearchResult
 
-class FAISSStore:
+from vectorstore.base_store import BaseVectorStore
+
+
+class FAISSStore(BaseVectorStore):
 
     def __init__(self, dimension: int):
 
@@ -10,33 +15,39 @@ class FAISSStore:
             dimension
         )
 
-        self.documents = []
+        self.chunks: list[Chunk] = []
 
-    def add(self, embeddings, texts):
+    def add(
+        self,
+        chunks,
+        embeddings,
+    ):
 
         embeddings = np.asarray(
             embeddings,
-            dtype="float32",
+            dtype=np.float32,
         )
 
         self.index.add(
             embeddings
         )
 
-        self.documents.extend(texts)
+        self.chunks.extend(
+            chunks
+        )
 
     def search(
         self,
         embedding,
-        top_k=3,
+        top_k=5,
     ):
 
         embedding = np.asarray(
             [embedding],
-            dtype="float32",
+            dtype=np.float32,
         )
 
-        scores, indices = self.index.search(
+        scores, ids = self.index.search(
             embedding,
             top_k,
         )
@@ -45,17 +56,22 @@ class FAISSStore:
 
         for score, idx in zip(
             scores[0],
-            indices[0],
+            ids[0],
         ):
 
             if idx == -1:
                 continue
 
             results.append(
-                {
-                    "score": float(score),
-                    "text": self.documents[idx],
-                }
+
+                SearchResult(
+
+                    chunk=self.chunks[idx],
+
+                    score=float(score)
+
+                )
+
             )
 
         return results
