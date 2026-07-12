@@ -28,8 +28,9 @@ store = index.build_index(
 )
 
 retriever = RetrievalService(
-    store,
-    index.embedding_provider,
+    store=store,
+    embedding_provider=index.embedding_provider,
+    bm25=index.bm25,
 )
 
 llm = LLM()

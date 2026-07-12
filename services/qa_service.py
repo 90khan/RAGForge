@@ -20,8 +20,8 @@ class QAService:
         question,
     ):
 
-        results = self.retriever.retrieve(
-            question
+        results = self.retriever.hybrid_retrieve(
+                                        question
         )
 
         if not results:

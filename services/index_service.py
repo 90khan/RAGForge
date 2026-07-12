@@ -1,6 +1,7 @@
 from models.document import Document
 from providers.embedding_factory import EmbeddingFactory
 from vectorstore.faiss_store import FAISSStore
+from retrieval.bm25 import BM25Retriever
 
 
 class IndexService:
@@ -19,6 +20,7 @@ class IndexService:
         self.embedding_provider = EmbeddingFactory.create()
 
         self.store = None
+        self.bm25 = BM25Retriever()
 
     def build_index(
         self,
@@ -41,6 +43,9 @@ class IndexService:
         self.store.add(
             chunks=document.chunks,
             embeddings=embeddings,
+        )
+        self.bm25.build(
+            document.chunks
         )
 
         return self.store
