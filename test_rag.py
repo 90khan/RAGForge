@@ -4,11 +4,11 @@ from loaders.loader_factory import LoaderFactory
 
 from core.chunker import TextChunker
 
-from services.vector_service import VectorService
 from services.retrieval_service import RetrievalService
 from services.qa_service import QAService
 
 from core.llm import LLM
+from services.index_service import IndexService
 
 
 pdf = Path("data/uploads/example.pdf")
@@ -19,13 +19,17 @@ document = loader.load(pdf)
 
 document = TextChunker().split(document)
 
-vector = VectorService()
 
-store = vector.build(document)
+
+index = IndexService()
+
+store = index.build_index(
+    document
+)
 
 retriever = RetrievalService(
     store,
-    vector.embedding,
+    index.embedding_provider,
 )
 
 llm = LLM()

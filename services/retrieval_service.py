@@ -1,3 +1,8 @@
+from typing import List
+
+from models.search import SearchResult
+
+
 class RetrievalService:
 
     def __init__(
@@ -11,24 +16,26 @@ class RetrievalService:
 
     def retrieve(
         self,
-        query,
-        top_k=5,
-        min_score=0.55,
-    ):
+        query: str,
+        top_k: int = 5,
+        min_score: float = 0.55,
+    ) -> List[SearchResult]:
 
-        vector = self.embedding.embed([query])[0]
+        query_vector = self.embedding.embed_query(
+            query
+        )
 
         results = self.store.search(
-            vector,
+            query_vector,
             top_k,
         )
 
         return [
 
-            r
+            result
 
-            for r in results
+            for result in results
 
-            if r.score >= min_score
+            if result.score >= min_score
 
         ]

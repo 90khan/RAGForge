@@ -1,29 +1,32 @@
-import numpy as np
-
 from sentence_transformers import SentenceTransformer
 
-from config.settings import settings
 
-from providers.embedding_provider import EmbeddingProvider
-
-
-class SentenceTransformerProvider(
-    EmbeddingProvider
-):
+class SentenceTransformerProvider:
 
     def __init__(self):
 
         self.model = SentenceTransformer(
-            settings.embedding_model
+            "BAAI/bge-small-en-v1.5"
         )
 
-    def embed(
+    def embed_documents(
         self,
-        texts,
-    ) -> np.ndarray:
+        texts: list[str],
+    ):
 
         return self.model.encode(
             texts,
+            normalize_embeddings=True,
+            convert_to_numpy=True,
+        )
+
+    def embed_query(
+        self,
+        query: str,
+    ):
+
+        return self.model.encode(
+            query,
             normalize_embeddings=True,
             convert_to_numpy=True,
         )
