@@ -1,24 +1,34 @@
-from services.vector_service import VectorService
-
-
 class RetrievalService:
 
-    def __init__(self, store, embedding_provider):
+    def __init__(
+        self,
+        store,
+        embedding_provider,
+    ):
 
         self.store = store
         self.embedding = embedding_provider
 
     def retrieve(
         self,
-        query: str,
-        top_k: int = 5,
+        query,
+        top_k=5,
+        min_score=0.55,
     ):
 
-        query_embedding = self.embedding.embed(
-            [query]
-        )[0]
+        vector = self.embedding.embed([query])[0]
 
-        return self.store.search(
-            query_embedding,
-            top_k=top_k,
+        results = self.store.search(
+            vector,
+            top_k,
         )
+
+        return [
+
+            r
+
+            for r in results
+
+            if r.score >= min_score
+
+        ]

@@ -63,15 +63,13 @@ class FAISSStore(BaseVectorStore):
                 continue
 
             results.append(
-
                 SearchResult(
-
-                    chunk=self.chunks[idx],
-
-                    score=float(score)
-
-                )
-
-            )
+        chunk=self.chunks[idx],
+        score=float(score),
+        source=self.chunks[idx].metadata["source"],
+        page=self.chunks[idx].metadata.get("page"),
+    )
+)
+            
 
         return results

@@ -28,9 +28,13 @@ class TextChunker:
             end = start + self.chunk_size
 
             chunk = Chunk(
-                id=chunk_id,
-                text=text[start:end],
-            )
+    id=str(chunk_id),
+    text=text[start:end],
+    metadata={
+        "source": document.source,
+        "chunk": chunk_id,
+    },
+)
 
             document.chunks.append(chunk)
 

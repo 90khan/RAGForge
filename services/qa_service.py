@@ -1,48 +1,36 @@
-from core.prompts import SYSTEM_PROMPT
+from core.prompt_builder import PromptBuilder
 
 
 class QAService:
 
     def __init__(
-
         self,
-
         retriever,
-
         llm,
-
     ):
 
         self.retriever = retriever
 
         self.llm = llm
 
+        self.builder = PromptBuilder()
+
     def ask(
-
         self,
-
-        question: str,
-
+        question,
     ):
 
         results = self.retriever.retrieve(
             question
         )
 
-        context = "\n\n".join(
+        if not results:
 
-            r.chunk.text
+            return "No relevant information found."
 
-            for r in results
-
-        )
-
-        prompt = SYSTEM_PROMPT.format(
-
-            context=context,
-
-            question=question,
-
+        prompt = self.builder.build(
+            question,
+            results,
         )
 
         return self.llm.generate(
