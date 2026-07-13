@@ -30,16 +30,13 @@ class RetrievalService:
         self.expander = QueryExpander()
 
         self.rrf = ReciprocalRankFusion()
-
         self.reranker = CrossEncoderReranker()
 
-        self.graph = None
-
-        if graph_store is not None:
-
-            self.graph = GraphRetriever(
-                graph_store
-            )
+        self.graph = (
+            GraphRetriever(graph_store)
+            if graph_store is not None
+            else None
+        )
 
     def hybrid_retrieve(
         self,
@@ -47,6 +44,10 @@ class RetrievalService:
         top_k: int = 5,
         min_score: float = 0.55,
     ) -> List[SearchResult]:
+
+        # -------------------------
+        # Query Processing
+        # -------------------------
 
         query = self.processor.process(
             query
@@ -75,24 +76,33 @@ class RetrievalService:
         min_score: float,
     ) -> List[SearchResult]:
 
-        # ---------------------------------
+        # =====================================================
         # Semantic Search
-        # ---------------------------------
+        # =====================================================
 
         semantic = self.store.search(
             query_vector,
             max(top_k * 2, 10),
         )
 
-        semantic = [
-            result
-            for result in semantic
-            if result.score >= min_score
-        ]
+        semantic_results = []
 
-        # ---------------------------------
-        # BM25
-        # ---------------------------------
+        for result in semantic:
+
+            if result.score < min_score:
+                continue
+
+            result.retriever = "semantic"
+
+            semantic_results.append(
+                result
+            )
+
+        semantic = semantic_results
+
+        # =====================================================
+        # BM25 Search
+        # =====================================================
 
         lexical = []
 
@@ -103,9 +113,9 @@ class RetrievalService:
                 top_k=max(top_k * 2, 10),
             )
 
-        # ---------------------------------
+        # =====================================================
         # Graph Retrieval
-        # ---------------------------------
+        # =====================================================
 
         graph_results = []
 
@@ -122,15 +132,16 @@ class RetrievalService:
                     score=1.0,
                     source=chunk.metadata["source"],
                     page=chunk.metadata.get("page"),
+                    retriever="graph",
                 )
 
                 for chunk in chunks
 
             ]
 
-        # ---------------------------------
+        # =====================================================
         # Reciprocal Rank Fusion
-        # ---------------------------------
+        # =====================================================
 
         fused = self.rrf.fuse(
             semantic,
@@ -138,9 +149,9 @@ class RetrievalService:
             graph_results,
         )
 
-        # ---------------------------------
+        # =====================================================
         # CrossEncoder Reranking
-        # ---------------------------------
+        # =====================================================
 
         return self.reranker.rerank(
             query=query,

@@ -1,5 +1,7 @@
 import streamlit as st
 
+from citation.formatter import CitationFormatter
+
 
 class ChatUI:
 
@@ -9,13 +11,19 @@ class ChatUI:
 
             st.session_state.messages = []
 
+        self.formatter = CitationFormatter()
+
     def render_history(self):
 
         for message in st.session_state.messages:
 
-            with st.chat_message(message["role"]):
+            with st.chat_message(
+                message["role"]
+            ):
 
-                st.markdown(message["content"])
+                st.markdown(
+                    message["content"]
+                )
 
     def add_user_message(
         self,
@@ -41,6 +49,10 @@ class ChatUI:
             }
         )
 
+    # ---------------------------------
+    # Legacy Sources
+    # ---------------------------------
+
     def show_sources(
         self,
         sources,
@@ -49,7 +61,9 @@ class ChatUI:
         if not sources:
             return
 
-        with st.expander("📚 Sources"):
+        with st.expander(
+            "📚 Sources"
+        ):
 
             shown = set()
 
@@ -63,7 +77,9 @@ class ChatUI:
                 if key in shown:
                     continue
 
-                shown.add(key)
+                shown.add(
+                    key
+                )
 
                 st.markdown(
                     f"""
@@ -74,3 +90,28 @@ Page: {result.page}
 Score: {result.score:.3f}
 """
                 )
+
+    # ---------------------------------
+    # Citation Engine
+    # ---------------------------------
+
+    def show_citations(
+        self,
+        citations,
+    ):
+
+        if not citations:
+
+            return
+
+        with st.expander(
+            "📚 Citations"
+        ):
+
+            st.markdown(
+
+                self.formatter.markdown(
+                    citations
+                )
+
+            )

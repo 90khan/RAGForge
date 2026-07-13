@@ -1,3 +1,5 @@
+from citation.citation_builder import CitationBuilder
+
 from core.prompt_builder import PromptBuilder
 
 from memory.memory_manager import (
@@ -17,13 +19,11 @@ class QAService:
 
         self.llm = llm
 
-        self.prompt_builder = (
-            PromptBuilder()
-        )
+        self.prompt_builder = PromptBuilder()
 
-        self.memory = (
-            MemoryManager()
-        )
+        self.memory = MemoryManager()
+
+        self.citation_builder = CitationBuilder()
 
     def ask(
         self,
@@ -62,6 +62,8 @@ class QAService:
 
                 "sources": [],
 
+                "citations": [],
+
             }
 
         # -------------------------
@@ -87,6 +89,14 @@ class QAService:
         )
 
         # -------------------------
+        # Citations
+        # -------------------------
+
+        citations = self.citation_builder.build(
+            results
+        )
+
+        # -------------------------
         # Update Memory
         # -------------------------
 
@@ -99,5 +109,7 @@ class QAService:
             "answer": answer,
 
             "sources": results,
+
+            "citations": citations,
 
         }

@@ -118,6 +118,6 @@ if question:
         response["answer"]
     )
 
-    chat.show_sources(
-        response["sources"]
+    chat.show_citations(
+        response["citations"]
     )
