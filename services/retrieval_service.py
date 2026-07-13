@@ -1,6 +1,8 @@
 from typing import List
 
 from models.search import SearchResult
+from retrieval.rrf import ReciprocalRankFusion
+from reranking.cross_encoder import CrossEncoderReranker
 
 
 class RetrievalService:
@@ -11,9 +13,13 @@ class RetrievalService:
         embedding_provider,
         bm25=None,
     ):
+
         self.store = store
         self.embedding = embedding_provider
         self.bm25 = bm25
+
+        self.rrf = ReciprocalRankFusion()
+        self.reranker = CrossEncoderReranker()
 
     def retrieve(
         self,
@@ -42,51 +48,38 @@ class RetrievalService:
         min_score: float = 0.55,
     ) -> List[SearchResult]:
 
-        query_vector = self.embedding.embed_query(query)
-
-        semantic = self.store.search(
-            query_vector,
-            top_k,
+        # Semantic Search
+        semantic = self.retrieve(
+            query=query,
+            top_k=max(top_k * 2, 10),
+            min_score=min_score,
         )
 
-        semantic = [
-            r
-            for r in semantic
-            if r.score >= min_score
-        ]
-
+        # Eğer BM25 yoksa sadece rerank yap
         if self.bm25 is None:
-            return semantic
-
-        lexical = self.bm25.search(
-            query,
-            top_k,
-        )
-
-        merged = []
-        seen = set()
-
-        for result in semantic:
-            merged.append(result)
-            seen.add(result.chunk.id)
-
-        for score, chunk in lexical:
-
-            if chunk.id in seen:
-                continue
-
-            merged.append(
-                SearchResult(
-                    chunk=chunk,
-                    score=float(score),
-                    source=chunk.metadata["source"],
-                    page=chunk.metadata.get("page"),
-                )
+            return self.reranker.rerank(
+                query=query,
+                results=semantic,
+                top_k=top_k,
             )
 
-        merged.sort(
-            key=lambda x: x.score,
-            reverse=True,
+        # BM25 Search
+        lexical = self.bm25.search(
+            query=query,
+            top_k=max(top_k * 2, 10),
         )
 
-        return merged[:top_k]
+        # RRF Fusion
+        fused = self.rrf.fuse(
+            semantic=semantic,
+            lexical=lexical,
+        )
+
+        # CrossEncoder Reranking
+        reranked = self.reranker.rerank(
+            query=query,
+            results=fused,
+            top_k=top_k,
+        )
+
+        return reranked
