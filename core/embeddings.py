@@ -7,9 +7,7 @@ class EmbeddingModel:
 
     def __init__(self):
 
-        self.model = SentenceTransformer(
-            settings.embedding_model
-        )
+        self.model = SentenceTransformer(settings.embedding_model)
 
     def encode(self, texts):
 

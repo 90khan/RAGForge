@@ -34,36 +34,24 @@ class QAService:
         # Conversation Memory
         # -------------------------
 
-        self.memory.add_user(
-            question
-        )
+        self.memory.add_user(question)
 
         # -------------------------
         # Retrieval
         # -------------------------
 
-        results = self.retriever.hybrid_retrieve(
-            question
-        )
+        results = self.retriever.hybrid_retrieve(question)
 
         if not results:
 
-            answer = (
-                "No relevant information found."
-            )
+            answer = "No relevant information found."
 
-            self.memory.add_assistant(
-                answer
-            )
+            self.memory.add_assistant(answer)
 
             return {
-
                 "answer": answer,
-
                 "sources": [],
-
                 "citations": [],
-
             }
 
         # -------------------------
@@ -71,45 +59,31 @@ class QAService:
         # -------------------------
 
         prompt = self.prompt_builder.build(
-
             question=question,
-
             results=results,
-
             conversation=self.memory.get_context(),
-
         )
 
         # -------------------------
         # LLM
         # -------------------------
 
-        answer = self.llm.generate(
-            prompt
-        )
+        answer = self.llm.generate(prompt)
 
         # -------------------------
         # Citations
         # -------------------------
 
-        citations = self.citation_builder.build(
-            results
-        )
+        citations = self.citation_builder.build(results)
 
         # -------------------------
         # Update Memory
         # -------------------------
 
-        self.memory.add_assistant(
-            answer
-        )
+        self.memory.add_assistant(answer)
 
         return {
-
             "answer": answer,
-
             "sources": results,
-
             "citations": citations,
-
         }

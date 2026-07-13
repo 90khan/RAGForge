@@ -5,9 +5,7 @@ class SentenceTransformerProvider:
 
     def __init__(self):
 
-        self.model = SentenceTransformer(
-            "BAAI/bge-small-en-v1.5"
-        )
+        self.model = SentenceTransformer("BAAI/bge-small-en-v1.5")
 
     def embed_documents(
         self,

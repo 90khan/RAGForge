@@ -2,7 +2,6 @@ from graph.entity_extractor import EntityExtractor
 
 
 class GraphRetriever:
-
     """
     Retrieves chunks from the knowledge graph.
     """
@@ -21,9 +20,7 @@ class GraphRetriever:
         query: str,
     ):
 
-        entities = self.extractor.extract_from_text(
-            query
-        )
+        entities = self.extractor.extract_from_text(query)
 
         results = []
 
@@ -32,9 +29,7 @@ class GraphRetriever:
         for entity in entities:
 
             # Exact entity matches
-            for chunk in self.graph.chunks(
-                entity
-            ):
+            for chunk in self.graph.chunks(entity):
 
                 if chunk.id not in seen:
 
@@ -43,13 +38,9 @@ class GraphRetriever:
                     seen.add(chunk.id)
 
             # Neighbor entities
-            for neighbor in self.graph.neighbors(
-                entity
-            ):
+            for neighbor in self.graph.neighbors(entity):
 
-                for chunk in self.graph.chunks(
-                    neighbor
-                ):
+                for chunk in self.graph.chunks(neighbor):
 
                     if chunk.id not in seen:
 

@@ -8,5 +8,4 @@ class BaseProvider(ABC):
         self,
         prompt: str,
         max_tokens: int = 512,
-    ) -> str:
-        ...
+    ) -> str: ...

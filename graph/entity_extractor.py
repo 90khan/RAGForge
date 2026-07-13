@@ -4,7 +4,6 @@ from models.document import Chunk
 
 
 class EntityExtractor:
-
     """
     Lightweight entity extractor.
 
@@ -15,18 +14,14 @@ class EntityExtractor:
     by spaCy or an LLM.
     """
 
-    ENTITY_PATTERN = re.compile(
-        r"\b[A-Z][a-zA-Z0-9_-]+\b"
-    )
+    ENTITY_PATTERN = re.compile(r"\b[A-Z][a-zA-Z0-9_-]+\b")
 
     def extract(
         self,
         chunk: Chunk,
     ) -> list[str]:
 
-        return self.extract_from_text(
-            chunk.text
-        )
+        return self.extract_from_text(chunk.text)
 
     def extract_from_text(
         self,
@@ -37,9 +32,7 @@ class EntityExtractor:
 
         seen = set()
 
-        words = self.ENTITY_PATTERN.findall(
-            text
-        )
+        words = self.ENTITY_PATTERN.findall(text)
 
         for word in words:
 
@@ -48,8 +41,6 @@ class EntityExtractor:
 
             seen.add(word)
 
-            entities.append(
-                word
-            )
+            entities.append(word)
 
         return entities

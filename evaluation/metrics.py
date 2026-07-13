@@ -13,22 +13,11 @@ class RetrievalMetrics:
 
             return 0.0
 
-        retrieved = {
+        retrieved = {result.chunk.id for result in results}
 
-            result.chunk.id
+        hits = len(retrieved & set(relevant_ids))
 
-            for result in results
-
-        }
-
-        hits = len(
-            retrieved &
-            set(relevant_ids)
-        )
-
-        return hits / len(
-            relevant_ids
-        )
+        return hits / len(relevant_ids)
 
     @staticmethod
     def precision_at_k(
@@ -40,19 +29,9 @@ class RetrievalMetrics:
 
             return 0.0
 
-        hits = sum(
+        hits = sum(1 for result in results if result.chunk.id in relevant_ids)
 
-            1
-
-            for result in results
-
-            if result.chunk.id in relevant_ids
-
-        )
-
-        return hits / len(
-            results
-        )
+        return hits / len(results)
 
     @staticmethod
     def hit_rate(

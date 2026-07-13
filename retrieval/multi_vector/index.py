@@ -23,27 +23,17 @@ class MultiVectorIndex:
         chunks,
     ):
 
-        first_vectors = self.encoder.encode(
-            chunks[0]
-        )
+        first_vectors = self.encoder.encode(chunks[0])
 
-        dimension = self.embedding.embed_documents(
-            first_vectors
-        ).shape[1]
+        dimension = self.embedding.embed_documents(first_vectors).shape[1]
 
-        store = MultiVectorStore(
-            dimension
-        )
+        store = MultiVectorStore(dimension)
 
         for chunk in chunks:
 
-            texts = self.encoder.encode(
-                chunk
-            )
+            texts = self.encoder.encode(chunk)
 
-            vectors = self.embedding.embed_documents(
-                texts
-            )
+            vectors = self.embedding.embed_documents(texts)
 
             store.add(
                 chunk,

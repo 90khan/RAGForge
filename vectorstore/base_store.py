@@ -11,13 +11,11 @@ class BaseVectorStore(ABC):
         self,
         chunks: list[Chunk],
         embeddings,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @abstractmethod
     def search(
         self,
         embedding,
         top_k: int,
-    ) -> list[SearchResult]:
-        ...
+    ) -> list[SearchResult]: ...

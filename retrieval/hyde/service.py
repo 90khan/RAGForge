@@ -15,12 +15,8 @@ class HyDEService:
         query: str,
     ):
 
-        hypothetical = self.generator.generate(
-            query
-        )
+        hypothetical = self.generator.generate(query)
 
-        vector = self.embedding.embed_query(
-            hypothetical
-        )
+        vector = self.embedding.embed_query(hypothetical)
 
         return vector

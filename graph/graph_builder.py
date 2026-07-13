@@ -17,16 +17,12 @@ class GraphBuilder:
 
         for chunk in chunks:
 
-            entities = self.extractor.extract(
-                chunk
-            )
+            entities = self.extractor.extract(chunk)
 
             # Add entities and map them to the current chunk
             for entity in entities:
 
-                store.add_entity(
-                    entity
-                )
+                store.add_entity(entity)
 
                 store.add_chunk(
                     entity,

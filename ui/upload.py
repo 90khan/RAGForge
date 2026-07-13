@@ -16,11 +16,8 @@ class UploadUI:
     def render(self):
 
         uploaded = st.sidebar.file_uploader(
-
             "Upload PDF",
-
             type=["pdf"],
-
         )
 
         if uploaded is None:

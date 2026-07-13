@@ -11,9 +11,7 @@ class Message:
 @dataclass(slots=True)
 class Conversation:
 
-    messages: list[Message] = field(
-        default_factory=list
-    )
+    messages: list[Message] = field(default_factory=list)
 
     def add_user(
         self,
@@ -21,15 +19,10 @@ class Conversation:
     ):
 
         self.messages.append(
-
             Message(
-
                 role="user",
-
                 content=content,
-
             )
-
         )
 
     def add_assistant(
@@ -38,15 +31,10 @@ class Conversation:
     ):
 
         self.messages.append(
-
             Message(
-
                 role="assistant",
-
                 content=content,
-
             )
-
         )
 
     def last(

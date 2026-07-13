@@ -10,9 +10,7 @@ class TextChunker:
     ):
 
         if overlap >= chunk_size:
-            raise ValueError(
-                "overlap must be smaller than chunk_size"
-            )
+            raise ValueError("overlap must be smaller than chunk_size")
 
         self.chunk_size = chunk_size
         self.overlap = overlap

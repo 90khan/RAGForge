@@ -5,7 +5,6 @@ from models.search import SearchResult
 
 
 class MultiVectorStore:
-
     """
     FAISS index that stores multiple vectors
     for the same chunk.
@@ -16,9 +15,7 @@ class MultiVectorStore:
         dimension: int,
     ):
 
-        self.index = faiss.IndexFlatIP(
-            dimension
-        )
+        self.index = faiss.IndexFlatIP(dimension)
 
         self.vector_to_chunk = []
 
@@ -35,19 +32,11 @@ class MultiVectorStore:
             dtype=np.float32,
         )
 
-        self.index.add(
-            embeddings
-        )
+        self.index.add(embeddings)
 
-        self.chunks[
-            chunk.id
-        ] = chunk
+        self.chunks[chunk.id] = chunk
 
-        self.vector_to_chunk.extend(
-
-            [chunk.id] * len(embeddings)
-
-        )
+        self.vector_to_chunk.extend([chunk.id] * len(embeddings))
 
     def search(
         self,
@@ -75,56 +64,30 @@ class MultiVectorStore:
             if vector_id == -1:
                 continue
 
-            chunk_id = self.vector_to_chunk[
-                vector_id
-            ]
+            chunk_id = self.vector_to_chunk[vector_id]
 
-            if (
+            if chunk_id not in merged or score > merged[chunk_id]:
 
-                chunk_id not in merged
-
-                or
-
-                score > merged[chunk_id]
-
-            ):
-
-                merged[
-                    chunk_id
-                ] = float(score)
+                merged[chunk_id] = float(score)
 
         results = []
 
         for chunk_id, score in merged.items():
 
-            chunk = self.chunks[
-                chunk_id
-            ]
+            chunk = self.chunks[chunk_id]
 
             results.append(
-
                 SearchResult(
-
                     chunk=chunk,
-
                     score=score,
-
                     source=chunk.metadata["source"],
-
-                    page=chunk.metadata.get(
-                        "page"
-                    ),
-
+                    page=chunk.metadata.get("page"),
                 )
-
             )
 
         results.sort(
-
             key=lambda x: x.score,
-
             reverse=True,
-
         )
 
         return results

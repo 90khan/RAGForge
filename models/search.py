@@ -23,6 +23,4 @@ class SearchResult:
 
     rank: int = 0
 
-    metadata: dict[str, Any] = field(
-        default_factory=dict
-    )
+    metadata: dict[str, Any] = field(default_factory=dict)

@@ -1,0 +1,41 @@
+# Git
+.git
+.gitignore
+
+# Virtual environments
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# Environment
+.env
+.env.*
+
+# macOS
+.DS_Store
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+
+# HuggingFace cache
+.cache/
+huggingface/
+
+# Uploads
+data/uploads/*
+!data/uploads/example.pdf

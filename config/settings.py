@@ -13,15 +13,9 @@ class Settings:
 
     app_name: str = "RAGForge"
 
-    ollama_model: str = os.getenv(
-        "OLLAMA_MODEL",
-        "llama3.2"
-    )
+    ollama_model: str = os.getenv("OLLAMA_MODEL", "llama3.2")
 
-    embedding_model: str = os.getenv(
-        "EMBEDDING_MODEL",
-        "BAAI/bge-small-en-v1.5"
-    )
+    embedding_model: str = os.getenv("EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5")
 
     chunk_size: int = 500
 

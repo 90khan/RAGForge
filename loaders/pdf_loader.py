@@ -8,10 +8,7 @@ from models.document import Document
 
 class PDFLoader(BaseLoader):
 
-    def load(
-        self,
-        file_path: Path
-    ) -> Document:
+    def load(self, file_path: Path) -> Document:
 
         reader = PdfReader(file_path)
 
@@ -25,8 +22,4 @@ class PDFLoader(BaseLoader):
 
                 pages.append(text)
 
-        return Document(
-            id=file_path.stem,
-            source=file_path,
-            text="\n".join(pages)
-        )
+        return Document(id=file_path.stem, source=file_path, text="\n".join(pages))

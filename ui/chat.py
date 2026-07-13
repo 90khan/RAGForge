@@ -17,13 +17,9 @@ class ChatUI:
 
         for message in st.session_state.messages:
 
-            with st.chat_message(
-                message["role"]
-            ):
+            with st.chat_message(message["role"]):
 
-                st.markdown(
-                    message["content"]
-                )
+                st.markdown(message["content"])
 
     def add_user_message(
         self,
@@ -61,9 +57,7 @@ class ChatUI:
         if not sources:
             return
 
-        with st.expander(
-            "📚 Sources"
-        ):
+        with st.expander("📚 Sources"):
 
             shown = set()
 
@@ -77,9 +71,7 @@ class ChatUI:
                 if key in shown:
                     continue
 
-                shown.add(
-                    key
-                )
+                shown.add(key)
 
                 st.markdown(
                     f"""
@@ -104,14 +96,6 @@ Score: {result.score:.3f}
 
             return
 
-        with st.expander(
-            "📚 Citations"
-        ):
+        with st.expander("📚 Citations"):
 
-            st.markdown(
-
-                self.formatter.markdown(
-                    citations
-                )
-
-            )
+            st.markdown(self.formatter.markdown(citations))

@@ -17,6 +17,4 @@ benchmark.add(
     )
 )
 
-print(
-    benchmark.samples
-)
+print(benchmark.samples)

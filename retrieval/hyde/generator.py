@@ -1,5 +1,4 @@
 class HyDEGenerator:
-
     """
     Generates a hypothetical document
     from the user query.

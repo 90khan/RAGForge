@@ -26,7 +26,6 @@ I couldn't find this information in the provided documents.
         for result in results:
 
             context.append(
-
                 f"""
 Source: {result.source.name}
 
@@ -36,7 +35,6 @@ Content:
 
 {result.chunk.text}
 """
-
             )
 
         context_text = "\n".join(context)

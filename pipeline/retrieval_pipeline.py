@@ -24,19 +24,13 @@ class RetrievalPipeline:
         top_k: int = 5,
     ):
 
-        query = self.processor.process(
-            query
-        )
+        query = self.processor.process(query)
 
-        query = self.expander.expand(
-            query
-        )
+        query = self.expander.expand(query)
 
         if self.hyde:
 
-            query_vector = self.hyde.create_embedding(
-                query
-            )
+            query_vector = self.hyde.create_embedding(query)
 
             return self.retrieval.search_vector(
                 query_vector,

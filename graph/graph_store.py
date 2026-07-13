@@ -17,9 +17,7 @@ class GraphStore:
         entity: str,
     ):
 
-        self.graph.add_node(
-            entity
-        )
+        self.graph.add_node(entity)
 
     def add_relation(
         self,
@@ -38,19 +36,12 @@ class GraphStore:
         chunk,
     ):
 
-        chunks = self.entity_chunks[
-            entity
-        ]
+        chunks = self.entity_chunks[entity]
 
         # Avoid duplicates
-        if all(
-            c.id != chunk.id
-            for c in chunks
-        ):
+        if all(c.id != chunk.id for c in chunks):
 
-            chunks.append(
-                chunk
-            )
+            chunks.append(chunk)
 
     def neighbors(
         self,
@@ -61,11 +52,7 @@ class GraphStore:
 
             return []
 
-        return list(
-            self.graph.neighbors(
-                entity
-            )
-        )
+        return list(self.graph.neighbors(entity))
 
     def chunks(
         self,

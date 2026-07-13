@@ -2,7 +2,6 @@ import re
 
 
 class QueryProcessor:
-
     """
     Cleans and normalizes
     user queries before retrieval.

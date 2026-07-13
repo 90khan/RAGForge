@@ -12,18 +12,14 @@ class MemoryManager:
         question: str,
     ):
 
-        self.conversation.add_user(
-            question
-        )
+        self.conversation.add_user(question)
 
     def add_assistant(
         self,
         answer: str,
     ):
 
-        self.conversation.add_assistant(
-            answer
-        )
+        self.conversation.add_assistant(answer)
 
     def get_context(
         self,
@@ -34,11 +30,7 @@ class MemoryManager:
 
         for message in self.conversation.last(limit):
 
-            history.append(
-
-                f"{message.role}: {message.content}"
-
-            )
+            history.append(f"{message.role}: {message.content}")
 
         return "\n".join(history)
 

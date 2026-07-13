@@ -28,6 +28,7 @@ class HealthResponse(BaseModel):
 
     status: str
 
+
 class RetrieveRequest(BaseModel):
 
     question: str
@@ -53,6 +54,7 @@ class RetrievalResult(BaseModel):
 class RetrieveResponse(BaseModel):
 
     results: list[RetrievalResult]
+
 
 class IndexResponse(BaseModel):
 

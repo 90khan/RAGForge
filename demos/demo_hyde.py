@@ -16,17 +16,13 @@ llm = LLM()
 
 embedding = EmbeddingFactory.create()
 
-generator = HyDEGenerator(
-    llm
-)
+generator = HyDEGenerator(llm)
 
 hyde = HyDEService(
     generator,
     embedding,
 )
 
-vector = hyde.create_embedding(
-    "What is Retrieval Augmented Generation?"
-)
+vector = hyde.create_embedding("What is Retrieval Augmented Generation?")
 
 print(vector.shape)

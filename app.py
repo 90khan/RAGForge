@@ -20,9 +20,7 @@ st.set_page_config(
 )
 
 st.title("🔥 RAGForge")
-st.caption(
-    "Pure Python • FAISS • BM25 • RRF • CrossEncoder • GraphRAG"
-)
+st.caption("Pure Python • FAISS • BM25 • RRF • CrossEncoder • GraphRAG")
 
 
 # --------------------------------------------------
@@ -44,28 +42,23 @@ uploaded_file = upload.render()
 
 if uploaded_file is None:
 
-    uploaded_file = Path(
-        "data/uploads/example.pdf"
-    )
+    uploaded_file = Path("data/uploads/example.pdf")
 
 
 # --------------------------------------------------
 # Build QA Pipeline
 # --------------------------------------------------
 
+
 @st.cache_resource(show_spinner=False)
 def build_pipeline(
     file_path: Path,
 ):
 
-    return PipelineService().build(
-        file_path
-    )
+    return PipelineService().build(file_path)
 
 
-qa = build_pipeline(
-    uploaded_file
-)
+qa = build_pipeline(uploaded_file)
 
 
 # --------------------------------------------------
@@ -81,9 +74,7 @@ chat.render_history()
 # Chat Input
 # --------------------------------------------------
 
-question = st.chat_input(
-    "Ask your question..."
-)
+question = st.chat_input("Ask your question...")
 
 
 # --------------------------------------------------
@@ -92,32 +83,20 @@ question = st.chat_input(
 
 if question:
 
-    chat.add_user_message(
-        question
-    )
+    chat.add_user_message(question)
 
     with st.chat_message("user"):
 
-        st.markdown(
-            question
-        )
+        st.markdown(question)
 
     with st.chat_message("assistant"):
 
         with st.spinner("Thinking..."):
 
-            response = qa.ask(
-                question
-            )
+            response = qa.ask(question)
 
-            st.markdown(
-                response["answer"]
-            )
+            st.markdown(response["answer"])
 
-    chat.add_assistant_message(
-        response["answer"]
-    )
+    chat.add_assistant_message(response["answer"])
 
-    chat.show_citations(
-        response["citations"]
-    )
+    chat.show_citations(response["citations"])

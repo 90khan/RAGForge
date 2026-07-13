@@ -11,9 +11,7 @@ class FAISSStore(BaseVectorStore):
 
     def __init__(self, dimension: int):
 
-        self.index = faiss.IndexFlatIP(
-            dimension
-        )
+        self.index = faiss.IndexFlatIP(dimension)
 
         self.chunks: list[Chunk] = []
 
@@ -28,13 +26,9 @@ class FAISSStore(BaseVectorStore):
             dtype=np.float32,
         )
 
-        self.index.add(
-            embeddings
-        )
+        self.index.add(embeddings)
 
-        self.chunks.extend(
-            chunks
-        )
+        self.chunks.extend(chunks)
 
     def search(
         self,
@@ -64,12 +58,11 @@ class FAISSStore(BaseVectorStore):
 
             results.append(
                 SearchResult(
-        chunk=self.chunks[idx],
-        score=float(score),
-        source=self.chunks[idx].metadata["source"],
-        page=self.chunks[idx].metadata.get("page"),
-    )
-)
-            
+                    chunk=self.chunks[idx],
+                    score=float(score),
+                    source=self.chunks[idx].metadata["source"],
+                    page=self.chunks[idx].metadata.get("page"),
+                )
+            )
 
         return results

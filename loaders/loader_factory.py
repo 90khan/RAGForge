@@ -21,6 +21,4 @@ class LoaderFactory:
         if suffix == ".docx":
             return DOCXLoader()
 
-        raise ValueError(
-            f"Unsupported file type: {suffix}"
-        )
+        raise ValueError(f"Unsupported file type: {suffix}")

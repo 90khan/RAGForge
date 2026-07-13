@@ -16,26 +16,14 @@ class CitationFormatter:
 
         for citation in citations:
 
-            page = (
-                citation.page
-                if citation.page is not None
-                else "-"
-            )
+            page = citation.page if citation.page is not None else "-"
 
             lines.append(
-
                 f"[{citation.id}] "
-
                 f"{citation.source} "
-
                 f"(Page {page}) "
-
                 f"Score: {citation.score:.3f} "
-
                 f"[{citation.retriever}]"
-
             )
 
-        return "\n".join(
-            lines
-        )
+        return "\n".join(lines)

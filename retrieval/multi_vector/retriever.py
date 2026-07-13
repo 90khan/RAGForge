@@ -2,7 +2,6 @@ import numpy as np
 
 
 class MultiVectorRetriever:
-
     """
     Searches over multiple vectors
     belonging to the same chunk.
@@ -37,12 +36,10 @@ class MultiVectorRetriever:
             for vector in vectors:
 
                 similarity = float(
-
                     np.dot(
                         query_vector,
                         vector,
                     )
-
                 )
 
                 if similarity > best:
@@ -50,23 +47,15 @@ class MultiVectorRetriever:
                     best = similarity
 
             scores.append(
-
                 (
-
                     chunk_id,
-
                     best,
-
                 )
-
             )
 
         scores.sort(
-
             key=lambda x: x[1],
-
             reverse=True,
-
         )
 
         return scores[:top_k]

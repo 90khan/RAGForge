@@ -32,11 +32,7 @@ class RetrievalService:
         self.rrf = ReciprocalRankFusion()
         self.reranker = CrossEncoderReranker()
 
-        self.graph = (
-            GraphRetriever(graph_store)
-            if graph_store is not None
-            else None
-        )
+        self.graph = GraphRetriever(graph_store) if graph_store is not None else None
 
     def hybrid_retrieve(
         self,
@@ -49,17 +45,11 @@ class RetrievalService:
         # Query Processing
         # -------------------------
 
-        query = self.processor.process(
-            query
-        )
+        query = self.processor.process(query)
 
-        query = self.expander.expand(
-            query
-        )
+        query = self.expander.expand(query)
 
-        query_vector = self.embedding.embed_query(
-            query
-        )
+        query_vector = self.embedding.embed_query(query)
 
         return self.search(
             query=query,
@@ -94,9 +84,7 @@ class RetrievalService:
 
             result.retriever = "semantic"
 
-            semantic_results.append(
-                result
-            )
+            semantic_results.append(result)
 
         semantic = semantic_results
 
@@ -121,12 +109,9 @@ class RetrievalService:
 
         if self.graph is not None:
 
-            chunks = self.graph.retrieve(
-                query
-            )
+            chunks = self.graph.retrieve(query)
 
             graph_results = [
-
                 SearchResult(
                     chunk=chunk,
                     score=1.0,
@@ -134,9 +119,7 @@ class RetrievalService:
                     page=chunk.metadata.get("page"),
                     retriever="graph",
                 )
-
                 for chunk in chunks
-
             ]
 
         # =====================================================

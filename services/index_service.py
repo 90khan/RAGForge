@@ -26,9 +26,7 @@ class IndexService:
 
     def __init__(self):
 
-        self.embedding_provider = (
-            EmbeddingFactory.create()
-        )
+        self.embedding_provider = EmbeddingFactory.create()
 
         self.vector_store: Optional[FAISSStore] = None
 
@@ -43,22 +41,15 @@ class IndexService:
         document: Document,
     ) -> "IndexService":
 
-        texts = [
-            chunk.text
-            for chunk in document.chunks
-        ]
+        texts = [chunk.text for chunk in document.chunks]
 
-        embeddings = self.embedding_provider.embed_documents(
-            texts
-        )
+        embeddings = self.embedding_provider.embed_documents(texts)
 
         # ---------------------------------
         # FAISS
         # ---------------------------------
 
-        self.vector_store = FAISSStore(
-            dimension=embeddings.shape[1]
-        )
+        self.vector_store = FAISSStore(dimension=embeddings.shape[1])
 
         self.vector_store.add(
             chunks=document.chunks,
@@ -69,28 +60,20 @@ class IndexService:
         # BM25
         # ---------------------------------
 
-        self.bm25.build(
-            document.chunks
-        )
+        self.bm25.build(document.chunks)
 
         # ---------------------------------
         # Knowledge Graph
         # ---------------------------------
 
-        self.graph = GraphBuilder().build(
-            document.chunks
-        )
+        self.graph = GraphBuilder().build(document.chunks)
 
         # ---------------------------------
         # Multi Vector
         # ---------------------------------
 
-        self.multi_vector_store = (
-            MultiVectorIndex(
-                self.embedding_provider
-            ).build(
-                document.chunks
-            )
+        self.multi_vector_store = MultiVectorIndex(self.embedding_provider).build(
+            document.chunks
         )
 
         return self

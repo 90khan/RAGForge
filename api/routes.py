@@ -12,7 +12,6 @@ from fastapi import (
 from api.schemas import (
     ChatRequest,
     ChatResponse,
-    HealthResponse,
     IndexResponse,
     RetrieveRequest,
     RetrieveResponse,
@@ -34,26 +33,24 @@ UPLOAD_DIR.mkdir(
 pipeline = PipelineService()
 
 # İlk açılışta örnek dokümanı indeksle
-pipeline.index(
-    Path("data/uploads/example.pdf")
-)
+pipeline.index(Path("data/uploads/example.pdf"))
 
 
 # ---------------------------------------------------
 # Health
 # ---------------------------------------------------
 
+
 @router.get("/")
 def root():
 
-    return RedirectResponse(
-        url="/docs"
-    )
+    return RedirectResponse(url="/docs")
 
 
 # ---------------------------------------------------
 # Index Document
 # ---------------------------------------------------
+
 
 @router.post(
     "/index",
@@ -63,9 +60,7 @@ def index_document(
     file: UploadFile = File(...),
 ):
 
-    suffix = Path(
-        file.filename
-    ).suffix.lower()
+    suffix = Path(file.filename).suffix.lower()
 
     if suffix not in {
         ".pdf",
@@ -77,10 +72,7 @@ def index_document(
             detail="Only PDF and DOCX are supported.",
         )
 
-    destination = (
-        UPLOAD_DIR /
-        file.filename
-    )
+    destination = UPLOAD_DIR / file.filename
 
     with destination.open("wb") as buffer:
 
@@ -89,28 +81,20 @@ def index_document(
             buffer,
         )
 
-    qa = pipeline.index(
-        destination
-    )
+    qa = pipeline.index(destination)
 
     return IndexResponse(
-
         success=True,
-
         filename=file.filename,
-
-        chunks=len(
-            qa.retriever.store.chunks
-        ),
-
+        chunks=len(qa.retriever.store.chunks),
         message="Document indexed successfully.",
-
     )
 
 
 # ---------------------------------------------------
 # Chat
 # ---------------------------------------------------
+
 
 @router.post(
     "/chat",
@@ -127,40 +111,28 @@ def chat(
             detail="No document indexed.",
         )
 
-    response = pipeline.chat(
-        request.question
-    )
+    response = pipeline.chat(request.question)
 
     sources = [
-
         SourceResponse(
-
             source=result.source.name,
-
             page=result.page,
-
             score=result.score,
-
             retriever=result.retriever,
-
         )
-
         for result in response["sources"]
-
     ]
 
     return ChatResponse(
-
         answer=response["answer"],
-
         sources=sources,
-
     )
 
 
 # ---------------------------------------------------
 # Retrieve
 # ---------------------------------------------------
+
 
 @router.post(
     "/retrieve",
@@ -183,27 +155,15 @@ def retrieve(
     )
 
     return RetrieveResponse(
-
         results=[
-
             RetrievalResult(
-
                 chunk_id=result.chunk.id,
-
                 text=result.chunk.text,
-
                 source=result.source.name,
-
                 page=result.page,
-
                 score=result.score,
-
                 retriever=result.retriever,
-
             )
-
             for result in results
-
         ]
-
     )

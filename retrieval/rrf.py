@@ -38,32 +38,16 @@ class ReciprocalRankFusion:
 
                 chunk_id = result.chunk.id
 
-                scores[
-                    chunk_id
-                ] += 1 / (
-                    self.k + rank
-                )
+                scores[chunk_id] += 1 / (self.k + rank)
 
                 if chunk_id not in results:
 
-                    results[
-                        chunk_id
-                    ] = result
+                    results[chunk_id] = result
 
         ranked = sorted(
-
             scores.items(),
-
             key=lambda item: item[1],
-
             reverse=True,
-
         )
 
-        return [
-
-            results[chunk_id]
-
-            for chunk_id, _ in ranked
-
-        ]
+        return [results[chunk_id] for chunk_id, _ in ranked]

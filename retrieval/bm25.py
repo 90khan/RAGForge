@@ -19,17 +19,9 @@ class BM25Retriever:
 
         self.chunks = chunks
 
-        corpus = [
+        corpus = [chunk.text.split() for chunk in chunks]
 
-            chunk.text.split()
-
-            for chunk in chunks
-
-        ]
-
-        self.index = BM25Okapi(
-            corpus
-        )
+        self.index = BM25Okapi(corpus)
 
     def search(
         self,
@@ -37,21 +29,15 @@ class BM25Retriever:
         top_k: int = 5,
     ) -> list[SearchResult]:
 
-        scores = self.index.get_scores(
-            query.split()
-        )
+        scores = self.index.get_scores(query.split())
 
         ranked = sorted(
-
             zip(
                 scores,
                 self.chunks,
             ),
-
             key=lambda item: item[0],
-
             reverse=True,
-
         )
 
         results = []
@@ -62,25 +48,14 @@ class BM25Retriever:
         ):
 
             results.append(
-
                 SearchResult(
-
                     chunk=chunk,
-
                     score=float(score),
-
                     source=chunk.metadata["source"],
-
-                    page=chunk.metadata.get(
-                        "page"
-                    ),
-
+                    page=chunk.metadata.get("page"),
                     retriever="bm25",
-
                     rank=rank,
-
                 )
-
             )
 
         return results

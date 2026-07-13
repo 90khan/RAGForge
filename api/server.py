@@ -16,6 +16,4 @@ app.include_router(router)
 @app.get("/", include_in_schema=False)
 def root():
 
-    return RedirectResponse(
-        url="/docs"
-    )
+    return RedirectResponse(url="/docs")

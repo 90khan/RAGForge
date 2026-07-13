@@ -18,21 +18,13 @@ class CitationBuilder:
         ):
 
             citations.append(
-
                 Citation(
-
                     id=index,
-
                     source=result.source.name,
-
                     page=result.page,
-
                     score=result.score,
-
                     retriever=result.retriever,
-
                 )
-
             )
 
         return citations

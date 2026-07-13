@@ -7,8 +7,5 @@ from models.document import Document
 class BaseLoader(ABC):
 
     @abstractmethod
-    def load(
-        self,
-        file_path: Path
-    ) -> Document:
+    def load(self, file_path: Path) -> Document:
         pass

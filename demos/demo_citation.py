@@ -14,49 +14,26 @@ chunk = Chunk(
 )
 
 results = [
-
     SearchResult(
-
         chunk=chunk,
-
         score=0.93,
-
         source=Path("example.pdf"),
-
         page=3,
-
         retriever="semantic",
-
     ),
-
     SearchResult(
-
         chunk=chunk,
-
         score=0.88,
-
         source=Path("example.pdf"),
-
         page=5,
-
         retriever="graph",
-
     ),
-
 ]
 
 builder = CitationBuilder()
 
-citations = builder.build(
-    results
-)
+citations = builder.build(results)
 
 formatter = CitationFormatter()
 
-print(
-
-    formatter.markdown(
-        citations
-    )
-
-)
+print(formatter.markdown(citations))

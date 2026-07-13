@@ -1,0 +1,17 @@
+services:
+
+  ragforge:
+
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+
+    container_name: ragforge
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ../data:/app/data
+
+    restart: unless-stopped

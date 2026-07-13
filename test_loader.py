@@ -2,9 +2,7 @@ from pathlib import Path
 
 from loaders.loader_factory import LoaderFactory
 
-file = Path(
-    "data/uploads/example.pdf"
-)
+file = Path("data/uploads/example.pdf")
 
 loader = LoaderFactory.create(file)
 

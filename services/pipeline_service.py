@@ -31,29 +31,21 @@ class PipelineService:
         # Load
         # -------------------------
 
-        loader = LoaderFactory.create(
-            file_path
-        )
+        loader = LoaderFactory.create(file_path)
 
-        document = loader.load(
-            file_path
-        )
+        document = loader.load(file_path)
 
         # -------------------------
         # Chunk
         # -------------------------
 
-        document = TextChunker().split(
-            document
-        )
+        document = TextChunker().split(document)
 
         # -------------------------
         # Build indexes
         # -------------------------
 
-        index = IndexService().build(
-            document
-        )
+        index = IndexService().build(document)
 
         # -------------------------
         # Retrieval
@@ -90,9 +82,7 @@ class PipelineService:
         file_path: Path,
     ) -> QAService:
 
-        return self.index(
-            file_path
-        )
+        return self.index(file_path)
 
     # -----------------------------------------
     # Chat
@@ -105,13 +95,9 @@ class PipelineService:
 
         if self.qa is None:
 
-            raise RuntimeError(
-                "No document has been indexed."
-            )
+            raise RuntimeError("No document has been indexed.")
 
-        return self.qa.ask(
-            question
-        )
+        return self.qa.ask(question)
 
     # -----------------------------------------
     # Status

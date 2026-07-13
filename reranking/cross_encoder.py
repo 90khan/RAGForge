@@ -24,10 +24,7 @@ class CrossEncoderReranker:
         if not results:
             return []
 
-        pairs = [
-            (query, result.chunk.text)
-            for result in results
-        ]
+        pairs = [(query, result.chunk.text) for result in results]
 
         scores = self.model.predict(pairs)
 
@@ -37,7 +34,4 @@ class CrossEncoderReranker:
             reverse=True,
         )
 
-        return [
-            result
-            for _, result in ranked[:top_k]
-        ]
+        return [result for _, result in ranked[:top_k]]
