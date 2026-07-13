@@ -3,6 +3,7 @@ from typing import List
 from models.search import SearchResult
 
 from retrieval.query_processor import QueryProcessor
+from retrieval.query_expander import QueryExpander
 from retrieval.rrf import ReciprocalRankFusion
 
 from reranking.cross_encoder import CrossEncoderReranker
@@ -22,40 +23,28 @@ class RetrievalService:
         self.bm25 = bm25
 
         self.processor = QueryProcessor()
+        self.expander = QueryExpander()
 
         self.rrf = ReciprocalRankFusion()
-
         self.reranker = CrossEncoderReranker()
 
     def retrieve(
         self,
-        query: str,
+        processed_query: str,
         top_k: int = 5,
         min_score: float = 0.55,
     ) -> List[SearchResult]:
 
-        query = self.processor.process(
-            query
-        )
-
         query_vector = self.embedding.embed_query(
-            query
+            processed_query
         )
 
-        results = self.store.search(
-            query_vector,
-            top_k,
+        return self.search_vector(
+            query_vector=query_vector,
+            query=processed_query,
+            top_k=top_k,
+            min_score=min_score,
         )
-
-        return [
-
-            result
-
-            for result in results
-
-            if result.score >= min_score
-
-        ]
 
     def hybrid_retrieve(
         self,
@@ -68,48 +57,55 @@ class RetrievalService:
             query
         )
 
-        semantic = self.retrieve(
-            query=query,
-            top_k=max(top_k * 2, 10),
+        query = self.expander.expand(
+            query
+        )
+
+        return self.retrieve(
+            processed_query=query,
+            top_k=top_k,
             min_score=min_score,
         )
+
+    def search_vector(
+        self,
+        query_vector,
+        query: str,
+        top_k: int = 5,
+        min_score: float = 0.55,
+    ) -> List[SearchResult]:
+
+        semantic = self.store.search(
+            query_vector,
+            max(top_k * 2, 10),
+        )
+
+        semantic = [
+            result
+            for result in semantic
+            if result.score >= min_score
+        ]
 
         if self.bm25 is None:
 
             return self.reranker.rerank(
-
                 query=query,
-
                 results=semantic,
-
                 top_k=top_k,
-
             )
 
         lexical = self.bm25.search(
-
             query=query,
-
             top_k=max(top_k * 2, 10),
-
         )
 
         fused = self.rrf.fuse(
-
             semantic=semantic,
-
             lexical=lexical,
-
         )
 
-        reranked = self.reranker.rerank(
-
+        return self.reranker.rerank(
             query=query,
-
             results=fused,
-
             top_k=top_k,
-
         )
-
-        return reranked

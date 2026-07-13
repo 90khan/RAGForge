@@ -1,71 +1,25 @@
 import re
 
 
-class QueryProcessor:
+def normalize(
+    self,
+    query: str,
+) -> str:
 
-    def __init__(self):
+    query = query.lower()
 
-        self.stopwords = {
+    # Remove punctuation
+    query = re.sub(
+        r"[^\w\s]",
+        " ",
+        query,
+    )
 
-            "the",
-            "a",
-            "an",
-            "is",
-            "are",
-            "of",
-            "to",
-            "for",
-            "and",
-            "or",
-            "in",
+    # Remove multiple spaces
+    query = re.sub(
+        r"\s+",
+        " ",
+        query,
+    )
 
-        }
-
-    def normalize(
-        self,
-        query: str,
-    ) -> str:
-
-        query = query.lower()
-
-        query = re.sub(
-            r"\s+",
-            " ",
-            query,
-        )
-
-        return query.strip()
-
-    def remove_stopwords(
-        self,
-        query: str,
-    ) -> str:
-
-        words = query.split()
-
-        words = [
-
-            w
-
-            for w in words
-
-            if w not in self.stopwords
-
-        ]
-
-        return " ".join(words)
-
-    def process(
-        self,
-        query: str,
-    ) -> str:
-
-        query = self.normalize(
-            query
-        )
-
-        query = self.remove_stopwords(
-            query
-        )
-
-        return query
+    return query.strip()
