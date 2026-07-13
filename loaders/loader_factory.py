@@ -1,17 +1,19 @@
 from pathlib import Path
 
-from loaders.pdf_loader import PDFLoader
 from loaders.docx_loader import DOCXLoader
+from loaders.pdf_loader import PDFLoader
 
 
 class LoaderFactory:
 
     @staticmethod
     def create(
-        file_path: Path
+        file_path: str | Path,
     ):
 
-        suffix = file_path.suffix.lower()
+        path = Path(file_path)
+
+        suffix = path.suffix.lower()
 
         if suffix == ".pdf":
             return PDFLoader()
@@ -20,5 +22,5 @@ class LoaderFactory:
             return DOCXLoader()
 
         raise ValueError(
-            f"Unsupported file type : {suffix}"
+            f"Unsupported file type: {suffix}"
         )

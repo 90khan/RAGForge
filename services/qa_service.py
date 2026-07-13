@@ -10,29 +10,39 @@ class QAService:
     ):
 
         self.retriever = retriever
-
         self.llm = llm
 
         self.builder = PromptBuilder()
 
     def ask(
         self,
-        question,
+        question: str,
     ):
 
         results = self.retriever.hybrid_retrieve(
-                                        question
+            question
         )
 
         if not results:
 
-            return "No relevant information found."
+            return {
+                "answer": "No relevant information found.",
+                "sources": [],
+            }
 
         prompt = self.builder.build(
             question,
             results,
         )
 
-        return self.llm.generate(
+        answer = self.llm.generate(
             prompt
         )
+
+        return {
+
+            "answer": answer,
+
+            "sources": results,
+
+        }
