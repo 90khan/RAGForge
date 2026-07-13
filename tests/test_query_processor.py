@@ -5,9 +5,7 @@ def test_query_processor():
 
     processor = QueryProcessor()
 
-    result = processor.process(
-        "What is RAG?"
-    )
+    result = processor.process("What is RAG?")
 
     assert isinstance(result, str)
 

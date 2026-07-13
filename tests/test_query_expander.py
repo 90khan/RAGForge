@@ -5,9 +5,7 @@ def test_query_expander():
 
     expander = QueryExpander()
 
-    result = expander.expand(
-        "What is RAG?"
-    )
+    result = expander.expand("What is RAG?")
 
     assert isinstance(result, str)
 

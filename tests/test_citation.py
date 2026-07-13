@@ -24,9 +24,7 @@ def test_citation_builder():
         retriever="semantic",
     )
 
-    citations = CitationBuilder().build(
-        [result]
-    )
+    citations = CitationBuilder().build([result])
 
     assert len(citations) == 1
 
