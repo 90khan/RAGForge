@@ -1,24 +1,13 @@
-from collections import defaultdict
-
 from retrieval.multi_vector.document_encoder import (
     MultiVectorEncoder,
 )
 
+from vectorstore.multi_vector_store import (
+    MultiVectorStore,
+)
+
 
 class MultiVectorIndex:
-
-    """
-    Creates multiple embeddings
-    for every chunk.
-
-    One chunk
-        ↓
-    Original
-    Summary
-    Source
-        ↓
-    Embeddings
-    """
 
     def __init__(
         self,
@@ -29,14 +18,22 @@ class MultiVectorIndex:
 
         self.encoder = MultiVectorEncoder()
 
-        self.index = defaultdict(list)
-
     def build(
         self,
         chunks,
     ):
 
-        self.index.clear()
+        first_vectors = self.encoder.encode(
+            chunks[0]
+        )
+
+        dimension = self.embedding.embed_documents(
+            first_vectors
+        ).shape[1]
+
+        store = MultiVectorStore(
+            dimension
+        )
 
         for chunk in chunks:
 
@@ -48,10 +45,9 @@ class MultiVectorIndex:
                 texts
             )
 
-            for vector in vectors:
+            store.add(
+                chunk,
+                vectors,
+            )
 
-                self.index[
-                    chunk.id
-                ].append(vector)
-
-        return self.index
+        return store

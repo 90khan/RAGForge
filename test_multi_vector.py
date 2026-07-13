@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from core.chunker import TextChunker
+
 from loaders.loader_factory import LoaderFactory
 
 from providers.embedding_factory import (
@@ -12,16 +13,16 @@ from retrieval.multi_vector.index import (
 )
 
 
-pdf_path = Path(
+pdf = Path(
     "data/uploads/example.pdf"
 )
 
 loader = LoaderFactory.create(
-    pdf_path
+    pdf
 )
 
 document = loader.load(
-    pdf_path
+    pdf
 )
 
 chunker = TextChunker()
@@ -33,23 +34,28 @@ document = chunker.split(
 embedding = EmbeddingFactory.create()
 
 index = MultiVectorIndex(
-    embedding_provider=embedding
+    embedding
 )
 
-vectors = index.build(
+store = index.build(
     document.chunks
 )
 
-print(
-    f"{len(document.chunks)} chunks"
+query = embedding.embed_query(
+    "What is RAG?"
 )
 
-print(
-    f"{len(vectors)} indexed chunks"
+results = store.search(
+    query,
+    top_k=5,
 )
 
-for chunk_id, embeddings in vectors.items():
+for r in results:
 
     print(
-        f"Chunk {chunk_id}: {len(embeddings)} vectors"
+
+        r.score,
+
+        r.chunk.id,
+
     )
