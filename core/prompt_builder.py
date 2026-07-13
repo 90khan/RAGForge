@@ -18,6 +18,7 @@ I couldn't find this information in the provided documents.
         self,
         question: str,
         results: list[SearchResult],
+        conversation: str = "",
     ) -> str:
 
         context = []
@@ -27,9 +28,9 @@ I couldn't find this information in the provided documents.
             context.append(
 
                 f"""
-Source : {result.source.name}
+Source: {result.source.name}
 
-Page : {result.page}
+Page: {result.page}
 
 Content:
 
@@ -40,7 +41,12 @@ Content:
 
         context_text = "\n".join(context)
 
-        return f"""{self.SYSTEM_PROMPT}
+        return f"""
+{self.SYSTEM_PROMPT}
+
+Conversation
+
+{conversation}
 
 Context
 
