@@ -6,25 +6,40 @@ from models.document import Chunk
 class EntityExtractor:
 
     """
-    Very lightweight entity extractor.
+    Lightweight entity extractor.
+
+    Can extract entities from either
+    a Chunk or plain text.
 
     Later this class can be replaced
     by spaCy or an LLM.
     """
+
+    ENTITY_PATTERN = re.compile(
+        r"\b[A-Z][a-zA-Z0-9_-]+\b"
+    )
 
     def extract(
         self,
         chunk: Chunk,
     ) -> list[str]:
 
-        entities = []
-
-        words = re.findall(
-            r"\b[A-Z][a-zA-Z0-9_-]+\b",
-            chunk.text,
+        return self.extract_from_text(
+            chunk.text
         )
 
+    def extract_from_text(
+        self,
+        text: str,
+    ) -> list[str]:
+
+        entities = []
+
         seen = set()
+
+        words = self.ENTITY_PATTERN.findall(
+            text
+        )
 
         for word in words:
 
@@ -32,6 +47,9 @@ class EntityExtractor:
                 continue
 
             seen.add(word)
-            entities.append(word)
+
+            entities.append(
+                word
+            )
 
         return entities

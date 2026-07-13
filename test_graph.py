@@ -5,15 +5,23 @@ from graph.graph_builder import GraphBuilder
 from loaders.loader_factory import LoaderFactory
 
 
-pdf = Path("data/uploads/example.pdf")
+pdf = Path(
+    "data/uploads/example.pdf"
+)
 
-loader = LoaderFactory.create(pdf)
+loader = LoaderFactory.create(
+    pdf
+)
 
-document = loader.load(pdf)
+document = loader.load(
+    pdf
+)
 
 chunker = TextChunker()
 
-document = chunker.split(document)
+document = chunker.split(
+    document
+)
 
 builder = GraphBuilder()
 
@@ -22,29 +30,44 @@ graph = builder.build(
 )
 
 print(
-
-    "Nodes:",
-
-    graph.graph.number_of_nodes(),
-
+    f"Nodes : {graph.graph.number_of_nodes()}"
 )
 
 print(
-
-    "Edges:",
-
-    graph.graph.number_of_edges(),
-
+    f"Edges : {graph.graph.number_of_edges()}"
 )
 
 print()
 
-print(
+print("First 20 entities")
 
-    list(
+for entity in list(graph.graph.nodes())[:20]:
 
-        graph.graph.nodes()
+    print(
+        "-",
+        entity,
+    )
 
-    )[:20]
+print()
 
-)
+print("Entity -> Chunk Mapping")
+
+count = 0
+
+for entity, chunks in graph.entity_chunks.items():
+
+    ids = sorted(
+        chunk.id
+        for chunk in chunks
+    )
+
+    print(
+        entity,
+        "->",
+        ids,
+    )
+
+    count += 1
+
+    if count == 10:
+        break

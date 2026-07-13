@@ -21,12 +21,19 @@ class GraphBuilder:
                 chunk
             )
 
+            # Add entities and map them to the current chunk
             for entity in entities:
 
                 store.add_entity(
                     entity
                 )
 
+                store.add_chunk(
+                    entity,
+                    chunk,
+                )
+
+            # Create relationships between entities
             for i in range(len(entities)):
 
                 for j in range(i + 1, len(entities)):
