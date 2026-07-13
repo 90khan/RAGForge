@@ -12,7 +12,17 @@ from services.retrieval_service import RetrievalService
 
 class PipelineService:
 
-    def build(
+    def __init__(self):
+
+        self.qa: QAService | None = None
+
+        self.current_document: Path | None = None
+
+    # -----------------------------------------
+    # Index document
+    # -----------------------------------------
+
+    def index(
         self,
         file_path: Path,
     ) -> QAService:
@@ -62,7 +72,53 @@ class PipelineService:
 
         llm = LLM()
 
-        return QAService(
+        self.qa = QAService(
             retriever=retriever,
             llm=llm,
         )
+
+        self.current_document = file_path
+
+        return self.qa
+
+    # -----------------------------------------
+    # Backward compatibility
+    # -----------------------------------------
+
+    def build(
+        self,
+        file_path: Path,
+    ) -> QAService:
+
+        return self.index(
+            file_path
+        )
+
+    # -----------------------------------------
+    # Chat
+    # -----------------------------------------
+
+    def chat(
+        self,
+        question: str,
+    ):
+
+        if self.qa is None:
+
+            raise RuntimeError(
+                "No document has been indexed."
+            )
+
+        return self.qa.ask(
+            question
+        )
+
+    # -----------------------------------------
+    # Status
+    # -----------------------------------------
+
+    def is_ready(
+        self,
+    ) -> bool:
+
+        return self.qa is not None
