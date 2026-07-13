@@ -4,8 +4,7 @@ from graph.entity_extractor import EntityExtractor
 class GraphRetriever:
 
     """
-    Retrieves chunks using
-    the knowledge graph.
+    Retrieves chunks from the knowledge graph.
     """
 
     def __init__(
@@ -27,11 +26,12 @@ class GraphRetriever:
         )
 
         results = []
+
         seen = set()
 
         for entity in entities:
 
-            # Direct matches
+            # Exact entity matches
             for chunk in self.graph.chunks(
                 entity
             ):
@@ -39,9 +39,10 @@ class GraphRetriever:
                 if chunk.id not in seen:
 
                     results.append(chunk)
+
                     seen.add(chunk.id)
 
-            # Neighbor matches
+            # Neighbor entities
             for neighbor in self.graph.neighbors(
                 entity
             ):
@@ -53,6 +54,7 @@ class GraphRetriever:
                     if chunk.id not in seen:
 
                         results.append(chunk)
+
                         seen.add(chunk.id)
 
         return results

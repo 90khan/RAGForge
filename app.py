@@ -2,19 +2,16 @@ from pathlib import Path
 
 import streamlit as st
 
-from core.chunker import TextChunker
-from core.llm import LLM
-
-from loaders.loader_factory import LoaderFactory
-
-from services.index_service import IndexService
-from services.qa_service import QAService
-from services.retrieval_service import RetrievalService
+from services.pipeline_service import PipelineService
 
 from ui.chat import ChatUI
 from ui.sidebar import Sidebar
 from ui.upload import UploadUI
 
+
+# --------------------------------------------------
+# Page
+# --------------------------------------------------
 
 st.set_page_config(
     page_title="RAGForge",
@@ -24,21 +21,22 @@ st.set_page_config(
 
 st.title("🔥 RAGForge")
 st.caption(
-    "Pure Python • FAISS • BM25 • RRF • CrossEncoder"
+    "Pure Python • FAISS • BM25 • RRF • CrossEncoder • GraphRAG"
 )
 
 
-# ----------------------------
+# --------------------------------------------------
 # Sidebar
-# ----------------------------
+# --------------------------------------------------
 
 sidebar = Sidebar()
+
 settings = sidebar.render()
 
 
-# ----------------------------
+# --------------------------------------------------
 # Upload
-# ----------------------------
+# --------------------------------------------------
 
 upload = UploadUI()
 
@@ -51,44 +49,17 @@ if uploaded_file is None:
     )
 
 
-# ----------------------------
-# Build Pipeline
-# ----------------------------
+# --------------------------------------------------
+# Build QA Pipeline
+# --------------------------------------------------
 
 @st.cache_resource(show_spinner=False)
-def build_pipeline(file_path: Path):
+def build_pipeline(
+    file_path: Path,
+):
 
-    loader = LoaderFactory.create(
+    return PipelineService().build(
         file_path
-    )
-
-    document = loader.load(
-        file_path
-    )
-
-    chunker = TextChunker()
-
-    document = chunker.split(
-        document
-    )
-
-    index = IndexService()
-
-    store = index.build_index(
-        document
-    )
-
-    retriever = RetrievalService(
-        store=store,
-        embedding_provider=index.embedding_provider,
-        bm25=index.bm25,
-    )
-
-    llm = LLM()
-
-    return QAService(
-        retriever=retriever,
-        llm=llm,
     )
 
 
@@ -96,23 +67,28 @@ qa = build_pipeline(
     uploaded_file
 )
 
+
+# --------------------------------------------------
+# Chat UI
+# --------------------------------------------------
+
 chat = ChatUI()
-
-
-# ----------------------------
-# Chat History
-# ----------------------------
 
 chat.render_history()
 
 
-# ----------------------------
+# --------------------------------------------------
 # Chat Input
-# ----------------------------
+# --------------------------------------------------
 
 question = st.chat_input(
     "Ask your question..."
 )
+
+
+# --------------------------------------------------
+# Chat
+# --------------------------------------------------
 
 if question:
 
@@ -122,7 +98,9 @@ if question:
 
     with st.chat_message("user"):
 
-        st.markdown(question)
+        st.markdown(
+            question
+        )
 
     with st.chat_message("assistant"):
 

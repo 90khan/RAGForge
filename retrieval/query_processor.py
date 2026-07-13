@@ -1,25 +1,32 @@
 import re
 
 
-def normalize(
-    self,
-    query: str,
-) -> str:
+class QueryProcessor:
 
-    query = query.lower()
+    """
+    Cleans and normalizes
+    user queries before retrieval.
+    """
 
-    # Remove punctuation
-    query = re.sub(
-        r"[^\w\s]",
-        " ",
-        query,
-    )
+    def process(
+        self,
+        query: str,
+    ) -> str:
 
-    # Remove multiple spaces
-    query = re.sub(
-        r"\s+",
-        " ",
-        query,
-    )
+        query = query.lower()
 
-    return query.strip()
+        # Remove punctuation
+        query = re.sub(
+            r"[^\w\s]",
+            " ",
+            query,
+        )
+
+        # Remove multiple spaces
+        query = re.sub(
+            r"\s+",
+            " ",
+            query,
+        )
+
+        return query.strip()

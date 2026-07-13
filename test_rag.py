@@ -1,56 +1,50 @@
 from pathlib import Path
 
-from loaders.loader_factory import LoaderFactory
-
-from core.chunker import TextChunker
-
-from services.retrieval_service import RetrievalService
-from services.qa_service import QAService
-
-from core.llm import LLM
-from services.index_service import IndexService
-
-
-pdf = Path("data/uploads/example.pdf")
-
-loader = LoaderFactory.create(pdf)
-
-document = loader.load(pdf)
-
-document = TextChunker().split(document)
-
-
-
-index = IndexService()
-
-store = index.build_index(
-    document
+from services.pipeline_service import (
+    PipelineService,
 )
 
-retriever = RetrievalService(
-    store=store,
-    embedding_provider=index.embedding_provider,
-    bm25=index.bm25,
-)
 
-llm = LLM()
+qa = PipelineService().build(
 
-qa = QAService(
-    retriever,
-    llm,
+    Path(
+        "data/uploads/example.pdf"
+    )
+
 )
 
 while True:
 
-    question = input("\nQuestion : ")
+    question = input(
+        "\nQuestion : "
+    )
 
     if question.lower() == "exit":
+
         break
+
+    response = qa.ask(
+        question
+    )
 
     print()
 
     print(
-
-        qa.ask(question)
-
+        response["answer"]
     )
+
+    print()
+
+    print("Sources")
+
+    for result in response["sources"]:
+
+        print(
+
+            f"- {result.source.name}"
+
+            f" | page={result.page}"
+
+            f" | score={result.score:.3f}"
+
+        )

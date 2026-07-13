@@ -1,5 +1,8 @@
 from core.prompt_builder import PromptBuilder
-from memory.memory_manager import MemoryManager
+
+from memory.memory_manager import (
+    MemoryManager,
+)
 
 
 class QAService:
@@ -11,53 +14,82 @@ class QAService:
     ):
 
         self.retriever = retriever
+
         self.llm = llm
 
-        self.builder = PromptBuilder()
+        self.prompt_builder = (
+            PromptBuilder()
+        )
 
-        self.memory = MemoryManager()
+        self.memory = (
+            MemoryManager()
+        )
 
     def ask(
         self,
         question: str,
     ):
 
-        # Store user message
+        # -------------------------
+        # Conversation Memory
+        # -------------------------
+
         self.memory.add_user(
             question
         )
 
-        # Retrieve relevant chunks
+        # -------------------------
+        # Retrieval
+        # -------------------------
+
         results = self.retriever.hybrid_retrieve(
             question
         )
 
         if not results:
 
-            answer = "No relevant information found."
+            answer = (
+                "No relevant information found."
+            )
 
             self.memory.add_assistant(
                 answer
             )
 
             return {
+
                 "answer": answer,
+
                 "sources": [],
+
             }
 
-        # Build prompt with conversation history
-        prompt = self.builder.build(
+        # -------------------------
+        # Prompt
+        # -------------------------
+
+        prompt = self.prompt_builder.build(
+
             question=question,
+
             results=results,
+
             conversation=self.memory.get_context(),
+
         )
 
-        # Generate answer
+        # -------------------------
+        # LLM
+        # -------------------------
+
         answer = self.llm.generate(
             prompt
         )
 
-        # Store assistant answer
+        # -------------------------
+        # Update Memory
+        # -------------------------
+
         self.memory.add_assistant(
             answer
         )

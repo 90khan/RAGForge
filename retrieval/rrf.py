@@ -7,42 +7,63 @@ class ReciprocalRankFusion:
     """
     Reciprocal Rank Fusion (RRF)
 
-    Paper:
-    Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods.
+    Supports any number of ranked lists.
     """
 
-    def __init__(self, k: int = 60):
+    def __init__(
+        self,
+        k: int = 60,
+    ):
+
         self.k = k
 
     def fuse(
         self,
-        semantic: list[SearchResult],
-        lexical: list[SearchResult],
+        *rankings: list[SearchResult],
     ) -> list[SearchResult]:
 
         scores = defaultdict(float)
+
         results = {}
 
-        # Semantic ranking
-        for rank, result in enumerate(semantic, start=1):
-            scores[result.chunk.id] += 1 / (self.k + rank)
-            results[result.chunk.id] = result
+        for ranking in rankings:
 
-        # BM25 ranking
-        for rank, result in enumerate(lexical, start=1):
+            if not ranking:
+                continue
 
-            scores[result.chunk.id] += 1 / (self.k + rank)
+            for rank, result in enumerate(
+                ranking,
+                start=1,
+            ):
 
-            if result.chunk.id not in results:
-                results[result.chunk.id] = result
+                chunk_id = result.chunk.id
+
+                scores[
+                    chunk_id
+                ] += 1 / (
+                    self.k + rank
+                )
+
+                if chunk_id not in results:
+
+                    results[
+                        chunk_id
+                    ] = result
 
         ranked = sorted(
+
             scores.items(),
-            key=lambda x: x[1],
+
+            key=lambda item: item[1],
+
             reverse=True,
+
         )
 
         return [
+
             results[chunk_id]
+
             for chunk_id, _ in ranked
+
         ]
